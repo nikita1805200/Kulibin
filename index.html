@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кулибин — Образовательная платформа</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">
+      <span class="brand-name">Кулибин</span>
+    </div>
+    <nav class="nav-tabs">
+      <button class="tab-btn" data-tab="battlepass">BattlePass</button>
+      <button class="tab-btn active" data-tab="tasks">Задания</button>
+    </nav>
+    <div class="user-profile">
+      <span class="user-badge">Ученик</span>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section id="battlepass-tab" class="tab-pane">
+      <div class="empty-state">
+        <h2>BattlePass</h2>
+        <p>Раздел находится в разработке.</p>
+      </div>
+    </section>
+
+    <section id="tasks-tab" class="tab-pane active">
+      <div class="section-header">
+        <h1>Выберите предмет</h1>
+        <p>Выберите школьный предмет для перехода к заданиям</p>
+      </div>
+      <div id="subjects-grid" class="subjects-grid"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
