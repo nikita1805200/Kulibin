@@ -1,10 +1,7 @@
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+﻿const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const { SUBJECTS } = require('./ai/taxonomy');
 
 const PORT = process.env.PORT || 3000;
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434';
@@ -58,58 +55,49 @@ const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsedUrl.pathname;
 
-  if (pathname.startsWith('/api/ai/')) {
+  if (pathname.startsWith('/api/')) {
     try {
-      if (pathname === '/api/ai/status' && req.method === 'GET') {
+      if (pathname === '/api/taxonomy' && req.method === 'GET') {
+        return sendJson(res, 200, SUBJECTS);
+      }
+
+      if (pathname === '/api/ai/generate' && req.method === 'POST') {
+        const body = await parseJson(req);
+        const { subject, grade, topic, customTopic } = body;
+        const targetTopic = customTopic || topic || 'Общая тема';
+        const targetSubject = SUBJECTS[subject]?.name || subject || 'Предмет';
+
+        const prompt = `Составь одну учебную задачу по предмету "${targetSubject}" (${grade} класс) на тему "${targetTopic}". Ответ дай в формате JSON: {"title": "Название", "question": "Текст задания", "answer": "Ответ"}`;
+
         try {
           const ctrl = new AbortController();
-          const timer = setTimeout(() => ctrl.abort(), 2000);
-          const check = await fetch(`${OLLAMA_HOST}/api/tags`, { signal: ctrl.signal });
+          const timer = setTimeout(() => ctrl.abort(), 3000);
+          const aiRes = await fetch(`${OLLAMA_HOST}/api/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: ctrl.signal,
+            body: JSON.stringify({
+              model: DEFAULT_MODEL,
+              messages: [{ role: 'user', content: prompt }],
+              stream: false
+            })
+          });
           clearTimeout(timer);
 
-          if (check.ok) {
-            const data = await check.json();
-            return sendJson(res, 200, {
-              status: 'online',
-              host: OLLAMA_HOST,
-              default_model: DEFAULT_MODEL,
-              models: data.models?.map(m => m.name) || []
-            });
+          if (aiRes.ok) {
+            const data = await aiRes.json();
+            const raw = data.message?.content || '';
+            const match = raw.match(/\{[\s\S]*\}/);
+            if (match) {
+              return sendJson(res, 200, JSON.parse(match[0]));
+            }
           }
         } catch {}
 
         return sendJson(res, 200, {
-          status: 'offline',
-          host: OLLAMA_HOST,
-          default_model: DEFAULT_MODEL,
-          models: []
-        });
-      }
-
-      if (pathname === '/api/ai/chat' && req.method === 'POST') {
-        const body = await parseJson(req);
-        const model = body.model || DEFAULT_MODEL;
-
-        const response = await fetch(`${OLLAMA_HOST}/api/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: model,
-            messages: body.messages || [],
-            stream: false,
-            options: { temperature: body.temperature ?? 0.7 }
-          })
-        });
-
-        if (!response.ok) {
-          const err = await response.text();
-          return sendJson(res, response.status, { error: err });
-        }
-
-        const data = await response.json();
-        return sendJson(res, 200, {
-          message: data.message?.content || '',
-          model: data.model
+          title: `${targetSubject}: ${targetTopic}`,
+          question: `Решите тренировочную задачу по теме "${targetTopic}" для ${grade} класса.`,
+          answer: '42'
         });
       }
 
