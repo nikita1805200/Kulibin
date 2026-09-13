@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -17,6 +17,7 @@
     <nav class="nav-tabs">
       <button class="tab-btn" data-tab="battlepass">BattlePass</button>
       <button class="tab-btn active" data-tab="tasks">Задания</button>
+      <button class="tab-btn" data-tab="generator">Генератор</button>
     </nav>
     <div class="user-profile">
       <span class="user-badge">Ученик</span>
@@ -37,6 +38,32 @@
         <p>Выберите школьный предмет для перехода к заданиям</p>
       </div>
       <div id="subjects-grid" class="subjects-grid"></div>
+    </section>
+
+    <section id="generator-tab" class="tab-pane">
+      <div class="section-header">
+        <h1>Генератор заданий</h1>
+        <p>Настройте параметры или укажите тему для генерации</p>
+      </div>
+      <div class="generator-card">
+        <div class="form-group">
+          <label for="gen-subject">Предмет</label>
+          <select id="gen-subject" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label for="gen-grade">Класс</label>
+          <select id="gen-grade" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label for="gen-topic">Тема по программе</label>
+          <select id="gen-topic" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label for="gen-custom-topic">Или своя тема</label>
+          <input type="text" id="gen-custom-topic" class="form-control" placeholder="Например: Теорема Пифагора в 3D">
+        </div>
+        <button id="btn-generate-task" class="primary-btn">Сгенерировать задание</button>
+      </div>
     </section>
   </main>
 
