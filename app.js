@@ -1,12 +1,3 @@
-const subjects = [
-  { id: 'math', name: 'Математика', icon: '📐' },
-  { id: 'algebra', name: 'Алгебра', icon: '📊' },
-  { id: 'geometry', name: 'Геометрия', icon: '📏' },
-  { id: 'physics', name: 'Физика', icon: '⚡' },
-  { id: 'cs', name: 'Информатика', icon: '💻' },
-  { id: 'chemistry', name: 'Химия', icon: '🧪' }
-];
-
 let taxonomyData = {};
 
 function initTabs() {
@@ -21,27 +12,6 @@ function initTabs() {
       const activePane = document.getElementById(targetTab + '-tab');
       if (activePane) activePane.classList.add('active');
     });
-  });
-}
-
-function renderSubjects() {
-  const container = document.getElementById('subjects-grid');
-  if (!container) return;
-  container.innerHTML = '';
-  subjects.forEach(sub => {
-    const card = document.createElement('div');
-    card.className = 'subject-card';
-    card.innerHTML = '<div class="subject-icon">' + sub.icon + '</div><div class="subject-info"><span class="subject-title">' + sub.name + '</span></div>';
-    card.addEventListener('click', () => {
-      const tabBtn = document.querySelector('[data-tab="generator"]');
-      if (tabBtn) tabBtn.click();
-      const subjectSelect = document.getElementById('gen-subject');
-      if (subjectSelect) {
-        subjectSelect.value = sub.id;
-        updateGrades();
-      }
-    });
-    container.appendChild(card);
   });
 }
 
@@ -190,7 +160,6 @@ function renderGeneratedTask(task) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
-  renderSubjects();
   loadTaxonomy();
   initPresets();
   initGenerator();
