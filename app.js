@@ -10,7 +10,7 @@ const subjects = [
 let taxonomyData = {};
 
 function initTabs() {
-  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabBtns = document.querySelectorAll('.tab-btn:not(.preset-btn)');
   const tabPanes = document.querySelectorAll('.tab-pane');
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -84,6 +84,32 @@ function updateTopics() {
   if (!current) return;
   const topics = current.topics[gradeSelect.value] || [];
   topicSelect.innerHTML = topics.map(t => '<option value="' + t + '">' + t + '</option>').join('');
+}
+
+function initPresets() {
+  const presetBtns = document.querySelectorAll('.preset-btn');
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const subject = btn.dataset.subject;
+      const grade = btn.dataset.grade;
+      const topic = btn.dataset.topic;
+
+      const subjectSelect = document.getElementById('gen-subject');
+      if (subjectSelect) {
+        subjectSelect.value = subject;
+        updateGrades();
+      }
+      const gradeSelect = document.getElementById('gen-grade');
+      if (gradeSelect) {
+        gradeSelect.value = grade;
+        updateTopics();
+      }
+      const topicSelect = document.getElementById('gen-topic');
+      if (topicSelect && topic) {
+        topicSelect.value = topic;
+      }
+    });
+  });
 }
 
 function initGenerator() {
@@ -166,5 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   renderSubjects();
   loadTaxonomy();
+  initPresets();
   initGenerator();
 });

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -46,6 +46,15 @@
         <p>Настройте параметры или укажите тему для генерации</p>
       </div>
       <div class="generator-card">
+        <div class="form-group">
+          <label>Быстрые пресеты</label>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="tab-btn preset-btn" data-subject="algebra" data-grade="9" data-topic="Квадратные уравнения">ОГЭ: Алгебра 9 кл</button>
+            <button type="button" class="tab-btn preset-btn" data-subject="algebra" data-grade="11" data-topic="Логарифмические уравнения">ЕГЭ: Алгебра 11 кл</button>
+            <button type="button" class="tab-btn preset-btn" data-subject="physics" data-grade="10" data-topic="Кинематика и динамика">ЕГЭ: Физика 10 кл</button>
+            <button type="button" class="tab-btn preset-btn" data-subject="cs" data-grade="11" data-topic="Динамическое программирование">Олимпиада: Информатика</button>
+          </div>
+        </div>
         <div class="form-group">
           <label for="gen-subject">Предмет</label>
           <select id="gen-subject" class="form-control"></select>
