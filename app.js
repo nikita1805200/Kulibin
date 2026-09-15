@@ -1,10 +1,15 @@
 const DEFAULT_TAXONOMY = {
   math: {
     name: 'Математика',
-    grades: [5, 6],
+    grades: [5, 6, 7, 8, 9, 10, 11],
     topics: {
       5: ['Десятичные дроби', 'Текстовые задачи на движение', 'Уравнения и формулы'],
-      6: ['Обыкновенные дроби', 'Пропорции и проценты', 'Отрицательные числа']
+      6: ['Обыкновенные дроби', 'Пропорции и проценты', 'Отрицательные числа'],
+      7: ['Линейные уравнения', 'Одночлены и многочлены', 'Формулы сокращенного умножения'],
+      8: ['Квадратные корни', 'Квадратные уравнения', 'Теорема Пифагора'],
+      9: ['Системы уравнений', 'Числовые прогрессии', 'Неравенства второй степени'],
+      10: ['Тригонометрические функции', 'Тригонометрические уравнения', 'Производная функции'],
+      11: ['Первообразная и интеграл', 'Показательные и логарифмические уравнения', 'Стереометрия']
     }
   },
   algebra: {
@@ -120,7 +125,12 @@ function updateGrades() {
   if (!subjectSelect || !gradeSelect) return;
   const current = taxonomyData[subjectSelect.value];
   if (!current) return;
+  
+  const prevGrade = gradeSelect.value;
   gradeSelect.innerHTML = current.grades.map(g => '<option value="' + g + '">' + g + ' класс</option>').join('');
+  if (current.grades.includes(Number(prevGrade))) {
+    gradeSelect.value = prevGrade;
+  }
   gradeSelect.onchange = updateTopics;
   updateTopics();
 }
