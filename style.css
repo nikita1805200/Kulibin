@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg-primary: #0d1117;
   --bg-secondary: #161b22;
   --bg-card: #21262d;
@@ -175,6 +175,8 @@ body {
   background-color: var(--bg-secondary);
   border-radius: var(--radius);
   border: 1px dashed var(--border-color);
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .empty-state h2 {
@@ -186,12 +188,22 @@ body {
   color: var(--text-secondary);
 }
 
+#generator-tab {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+#generator-tab .section-header {
+  text-align: center;
+}
+
 .generator-card {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 1.5rem;
-  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
