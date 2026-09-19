@@ -2,7 +2,7 @@
   "id": "task_1789850374282_847380",
   "workerId": "pc-Dima",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-19T20:39:34.282Z",
   "scheduledTime": "2026-09-19T20:39:30.508Z",
   "commitMessage": "y",
