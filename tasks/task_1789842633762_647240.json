@@ -2,7 +2,7 @@
   "id": "task_1789842633762_647240",
   "workerId": "Timur",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-19T18:30:33.762Z",
   "scheduledTime": "2026-09-19T18:30:30.058Z",
   "commitMessage": "-батл пасс и докер",
