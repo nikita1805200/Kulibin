@@ -2,7 +2,7 @@
   "id": "task_1789842633762_647240",
   "workerId": "Timur",
   "targetBranch": "main",
-  "status": "in_progress",
+  "status": "completed",
   "createdAt": "2026-09-19T18:30:33.762Z",
   "scheduledTime": "2026-09-19T18:30:30.058Z",
   "commitMessage": "-батл пасс и докер",
@@ -12,6 +12,6 @@
     "package.json"
   ],
   "patch": "diff --git a/.dockerignore b/.dockerignore\nnew file mode 100644\nindex 0000000..725a999\n--- /dev/null\n+++ b/.dockerignore\n@@ -0,0 +1,5 @@\n+node_modules\n+.git\n+.gitignore\n+*.log\n+.DS_Store\ndiff --git a/index.html b/index.html\nindex 2ab376c..b6e5fa1 100644\n--- a/index.html\n+++ b/index.html\n@@ -15,7 +15,6 @@\n       <span class=\"brand-name\">Кулибин</span>\n     </div>\n     <nav class=\"nav-tabs\">\n-      <button class=\"tab-btn\" data-tab=\"battlepass\">BattlePass</button>\n       <button class=\"tab-btn\" data-tab=\"tasks\">Задания</button>\n       <button class=\"tab-btn active\" data-tab=\"generator\">Генератор</button>\n     </nav>\n@@ -25,12 +24,6 @@\n   </header>\n \n   <main class=\"main-content\">\n-    <section id=\"battlepass-tab\" class=\"tab-pane\">\n-      <div class=\"empty-state\">\n-        <h2>BattlePass</h2>\n-        <p>Раздел находится в разработке.</p>\n-      </div>\n-    </section>\n \n     <section id=\"tasks-tab\" class=\"tab-pane\">\n       <div class=\"empty-state\">\ndiff --git a/package.json b/package.json\nnew file mode 100644\nindex 0000000..2305174\n--- /dev/null\n+++ b/package.json\n@@ -0,0 +1,10 @@\n+{\n+  \"name\": \"kulibin\",\n+  \"version\": \"1.0.0\",\n+  \"description\": \"Образовательная платформа Кулибин\",\n+  \"main\": \"server.js\",\n+  \"scripts\": {\n+    \"start\": \"node server.js\"\n+  },\n+  \"dependencies\": {}\n+}\n",
-  "executedAt": null,
+  "executedAt": "2026-09-19T18:51:10.254Z",
   "errorLog": null
 }
