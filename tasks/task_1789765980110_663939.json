@@ -2,7 +2,7 @@
   "id": "task_1789765980110_663939",
   "workerId": "artem",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-18T21:13:00.110Z",
   "scheduledTime": "2026-09-18T21:12:55.974Z",
   "commitMessage": "еще докер",
