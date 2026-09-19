@@ -1,0 +1,15 @@
+{
+  "id": "task_1789742833748_0df701",
+  "workerId": "pc-1",
+  "targetBranch": "main",
+  "status": "completed",
+  "createdAt": "2026-09-18T14:47:13.749Z",
+  "scheduledTime": "2026-09-18T14:52:59.078Z",
+  "commitMessage": "докер",
+  "files": [
+    "docker-compose.yml"
+  ],
+  "patch": "diff --git a/docker-compose.yml b/docker-compose.yml\nnew file mode 100644\nindex 0000000..cdf552a\n--- /dev/null\n+++ b/docker-compose.yml\n@@ -0,0 +1,27 @@\n+version: '3.8'\n+\n+services:\n+  app:\n+    build: .\n+    container_name: kulibin_app\n+    restart: unless-stopped\n+    ports:\n+      - \"3000:3000\"\n+    environment:\n+      - PORT=3000\n+      - OLLAMA_HOST=http://ollama:11434\n+      - DEFAULT_MODEL=llama3.2:1b\n+    depends_on:\n+      - ollama\n+\n+  ollama:\n+    image: ollama/ollama:latest\n+    container_name: kulibin_ollama\n+    restart: unless-stopped\n+    ports:\n+      - \"11434:11434\"\n+    volumes:\n+      - ollama_data:/root/.ollama\n+\n+volumes:\n+  ollama_data:\n",
+  "executedAt": "2026-09-18T14:54:32.152Z",
+  "errorLog": null
+}

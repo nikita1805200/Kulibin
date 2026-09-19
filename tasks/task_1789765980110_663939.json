@@ -1,0 +1,16 @@
+{
+  "id": "task_1789765980110_663939",
+  "workerId": "artem",
+  "targetBranch": "main",
+  "status": "pending",
+  "createdAt": "2026-09-18T21:13:00.110Z",
+  "scheduledTime": "2026-09-18T21:12:55.974Z",
+  "commitMessage": "еще докер",
+  "files": [
+    ".dockerignore",
+    "package.json"
+  ],
+  "patch": "diff --git a/.dockerignore b/.dockerignore\nnew file mode 100644\nindex 0000000..725a999\n--- /dev/null\n+++ b/.dockerignore\n@@ -0,0 +1,5 @@\n+node_modules\n+.git\n+.gitignore\n+*.log\n+.DS_Store\ndiff --git a/package.json b/package.json\nnew file mode 100644\nindex 0000000..2305174\n--- /dev/null\n+++ b/package.json\n@@ -0,0 +1,10 @@\n+{\n+  \"name\": \"kulibin\",\n+  \"version\": \"1.0.0\",\n+  \"description\": \"Образовательная платформа Кулибин\",\n+  \"main\": \"server.js\",\n+  \"scripts\": {\n+    \"start\": \"node server.js\"\n+  },\n+  \"dependencies\": {}\n+}\n",
+  "executedAt": null,
+  "errorLog": null
+}
