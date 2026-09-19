@@ -1,0 +1,18 @@
+{
+  "id": "task_1789850374282_847380",
+  "workerId": "pc-Dima",
+  "targetBranch": "main",
+  "status": "pending",
+  "createdAt": "2026-09-19T20:39:34.282Z",
+  "scheduledTime": "2026-09-19T20:39:30.508Z",
+  "commitMessage": "y",
+  "files": [
+    "index.html",
+    "style.css",
+    ".dockerignore",
+    "package.json"
+  ],
+  "patch": "diff --git a/.dockerignore b/.dockerignore\nnew file mode 100644\nindex 0000000..725a999\n--- /dev/null\n+++ b/.dockerignore\n@@ -0,0 +1,5 @@\n+node_modules\n+.git\n+.gitignore\n+*.log\n+.DS_Store\ndiff --git a/index.html b/index.html\nindex 2ab376c..b6e5fa1 100644\n--- a/index.html\n+++ b/index.html\n@@ -15,7 +15,6 @@\n       <span class=\"brand-name\">Кулибин</span>\n     </div>\n     <nav class=\"nav-tabs\">\n-      <button class=\"tab-btn\" data-tab=\"battlepass\">BattlePass</button>\n       <button class=\"tab-btn\" data-tab=\"tasks\">Задания</button>\n       <button class=\"tab-btn active\" data-tab=\"generator\">Генератор</button>\n     </nav>\n@@ -25,12 +24,6 @@\n   </header>\n \n   <main class=\"main-content\">\n-    <section id=\"battlepass-tab\" class=\"tab-pane\">\n-      <div class=\"empty-state\">\n-        <h2>BattlePass</h2>\n-        <p>Раздел находится в разработке.</p>\n-      </div>\n-    </section>\n \n     <section id=\"tasks-tab\" class=\"tab-pane\">\n       <div class=\"empty-state\">\ndiff --git a/package.json b/package.json\nnew file mode 100644\nindex 0000000..2305174\n--- /dev/null\n+++ b/package.json\n@@ -0,0 +1,10 @@\n+{\n+  \"name\": \"kulibin\",\n+  \"version\": \"1.0.0\",\n+  \"description\": \"Образовательная платформа Кулибин\",\n+  \"main\": \"server.js\",\n+  \"scripts\": {\n+    \"start\": \"node server.js\"\n+  },\n+  \"dependencies\": {}\n+}\ndiff --git a/style.css b/style.css\nindex 768eaa2..3ef9514 100644\n--- a/style.css\n+++ b/style.css\n@@ -1,4 +1,4 @@\n-﻿:root {\n+:root {\n   --bg-primary: #0d1117;\n   --bg-secondary: #161b22;\n   --bg-card: #21262d;\n@@ -175,6 +175,8 @@ body {\n   background-color: var(--bg-secondary);\n   border-radius: var(--radius);\n   border: 1px dashed var(--border-color);\n+  max-width: 640px;\n+  margin: 0 auto;\n }\n \n .empty-state h2 {\n@@ -186,12 +188,22 @@ body {\n   color: var(--text-secondary);\n }\n \n+#generator-tab {\n+  max-width: 640px;\n+  margin: 0 auto;\n+}\n+\n+#generator-tab .section-header {\n+  text-align: center;\n+}\n+\n .generator-card {\n   background-color: var(--bg-secondary);\n   border: 1px solid var(--border-color);\n   border-radius: var(--radius);\n   padding: 1.5rem;\n-  max-width: 600px;\n+  width: 100%;\n+  margin: 0 auto;\n   display: flex;\n   flex-direction: column;\n   gap: 1.25rem;\n",
+  "executedAt": null,
+  "errorLog": null
+}
