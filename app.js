@@ -176,25 +176,30 @@ function initGenerator() {
   const btn = document.getElementById('btn-generate-task');
   if (!btn) return;
   btn.addEventListener('click', async () => {
+    const exam = document.getElementById('gen-exam')?.value || '';
     const subject = document.getElementById('gen-subject').value;
     const grade = document.getElementById('gen-grade').value;
     const topic = document.getElementById('gen-topic').value;
     const customTopic = document.getElementById('gen-custom-topic').value.trim();
     btn.disabled = true;
-    btn.textContent = 'Генерация...';
+    btn.textContent = 'Генерация через ИИ...';
     try {
       const res = await fetch('/api/ai/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject, grade, topic, customTopic })
+        body: JSON.stringify({ exam, subject, grade, topic, customTopic })
       });
       const task = await res.json();
       renderGeneratedTask(task);
     } catch (err) {
       renderGeneratedTask({
         title: (taxonomyData[subject]?.name || 'Задание') + ' (' + grade + ' класс)',
+        examType: 'ТРЕНАЖЕР',
         question: 'Тренировочное задание по теме: ' + (customTopic || topic) + '. Найдите значение выражения или решите поставленную задачу.',
-        answer: 'Ответ зависит от решения'
+        hints: ['Используйте базовые формулы темы.'],
+        solution: 'Пошаговое решение формируется.',
+        answer: '42',
+        criteria: '1 балл'
       });
     } finally {
       btn.disabled = false;
@@ -212,17 +217,44 @@ function renderGeneratedTask(task) {
     card.style.marginTop = '1.5rem';
     document.getElementById('generator-tab').appendChild(card);
   }
-  card.innerHTML = '<h3>' + task.title + '</h3>' +
-    '<p style="margin: 0.75rem 0; line-height: 1.5;">' + task.question + '</p>' +
-    '<div class="form-group">' +
-    '  <label for="user-answer">Ваш ответ</label>' +
-    '  <input type="text" id="user-answer" class="form-control" placeholder="Введите ответ">' +
-    '</div>' +
-    '<div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">' +
-    '  <button id="btn-check-answer" class="primary-btn">Проверить ответ</button>' +
-    '  <button id="btn-show-answer" class="tab-btn" style="border: 1px solid var(--border-color);">Показать эталон</button>' +
-    '</div>' +
-    '<div id="answer-feedback" style="margin-top: 0.75rem; display: none; padding: 0.75rem; border-radius: 8px;"></div>';
+
+  const examBadge = task.examType ? `<span class="badge-exam">${task.examType}</span>` : '';
+  const diffBadge = task.difficulty ? `<span class="badge-diff">${task.difficulty}</span>` : '';
+  const hintsHtml = task.hints && task.hints.length > 0 ? `
+    <details class="hint-details" style="margin-top: 0.75rem;">
+      <summary style="cursor: pointer; color: var(--accent-color); font-size: 0.85rem; font-weight: 500;">💡 Показать подсказку</summary>
+      <div class="hint-box" style="margin-top: 0.5rem; padding: 0.6rem 0.85rem; background: var(--bg-primary); border-radius: 8px; font-size: 0.875rem; border: 1px solid var(--border-color);">
+        ${task.hints.join('<br>')}
+      </div>
+    </details>` : '';
+
+  card.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      <h3 style="font-size: 1.15rem; margin: 0;">${task.title}</h3>
+      <div style="display: flex; gap: 0.4rem;">${examBadge}${diffBadge}</div>
+    </div>
+    <div class="task-question" style="margin: 0.75rem 0; line-height: 1.6; white-space: pre-line; background: var(--bg-primary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+      ${task.question}
+    </div>
+    ${hintsHtml}
+    <div class="form-group" style="margin-top: 0.75rem;">
+      <label for="user-answer">Ваш ответ:</label>
+      <input type="text" id="user-answer" class="form-control" placeholder="Введите полученный ответ">
+    </div>
+    <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
+      <button id="btn-check-answer" class="primary-btn">Проверить ответ</button>
+      <button id="btn-toggle-solution" class="tab-btn" style="border: 1px solid var(--border-color);">Пошаговое решение</button>
+    </div>
+    <div id="answer-feedback" style="margin-top: 0.75rem; display: none; padding: 0.75rem; border-radius: 8px;"></div>
+    <div id="solution-section" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--border-color);">
+      <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">📝 Пошаговое решение (ФИПИ):</h4>
+      <p style="white-space: pre-line; line-height: 1.5; font-size: 0.9rem; margin-bottom: 0.75rem;">${task.solution || 'Решение доступно выше.'}</p>
+      <div style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
+        <span><strong>Эталонный ответ:</strong> <code style="color: #58a6ff;">${task.answer}</code></span>
+        <span>${task.criteria || '1 балл'}</span>
+      </div>
+    </div>
+  `;
 
   document.getElementById('btn-check-answer').onclick = () => {
     const userVal = document.getElementById('user-answer').value.trim().toLowerCase();
@@ -233,23 +265,37 @@ function renderGeneratedTask(task) {
       feedback.style.background = 'rgba(46, 160, 67, 0.15)';
       feedback.style.border = '1px solid #2ea043';
       feedback.style.color = '#3fb950';
-      feedback.textContent = 'Верно! Отличный результат.';
+      feedback.textContent = '🎉 Верно! Отличный результат.';
     } else {
       feedback.style.background = 'rgba(248, 81, 73, 0.15)';
       feedback.style.border = '1px solid #f85149';
       feedback.style.color = '#f85149';
-      feedback.textContent = 'Неверно. Попробуйте еще раз или посмотрите эталон.';
+      feedback.textContent = '❌ Неверно. Проверьте расчеты или откройте «Пошаговое решение».';
     }
   };
 
-  document.getElementById('btn-show-answer').onclick = () => {
-    const feedback = document.getElementById('answer-feedback');
-    feedback.style.display = 'block';
-    feedback.style.background = 'var(--bg-primary)';
-    feedback.style.border = '1px solid var(--border-color)';
-    feedback.style.color = 'var(--text-primary)';
-    feedback.textContent = 'Правильный ответ: ' + task.answer;
+  document.getElementById('btn-toggle-solution').onclick = () => {
+    const solSec = document.getElementById('solution-section');
+    solSec.style.display = solSec.style.display === 'none' ? 'block' : 'none';
   };
+}
+
+async function checkAiStatus() {
+  const badge = document.getElementById('ai-status-badge');
+  const text = document.getElementById('ai-status-text');
+  if (!badge || !text) return;
+  try {
+    const res = await fetch('/api/ai/status');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.ai?.connected) {
+        badge.classList.add('online');
+        text.textContent = `Qwen 2.5 14B (${data.fipi?.total || 0} ФИПИ)`;
+      } else {
+        text.textContent = `ФИПИ База (${data.fipi?.total || 0} задач)`;
+      }
+    }
+  } catch {}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -257,4 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
   populateSubjects();
   initPresets();
   initGenerator();
+  checkAiStatus();
 });
+
