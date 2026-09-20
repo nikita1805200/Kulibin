@@ -88,12 +88,12 @@ async function generateTask({ subject, grade, topic, customTopic, exam }) {
     fewShotExamples: fewShot
   });
 
-  // 3. Отправляем запрос в Qwen 2.5 14B через Ollama
+  // 3. Отправляем запрос в Qwen через Ollama
   try {
     const res = await ollama.chat(messages, {
-      model: process.env.DEFAULT_MODEL || 'qwen2.5-coder:14b',
+      model: process.env.DEFAULT_MODEL,
       temperature: 0.35,
-      timeoutMs: 45000
+      timeoutMs: 120000
     });
 
     // Извлечение JSON из текста

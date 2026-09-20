@@ -1,22 +1,53 @@
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434';
-const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'qwen2.5-coder:14b';
+const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'qwen2.5:7b';
+
+let cachedModels = null;
+let lastCheckTime = 0;
 
 /**
  * Получение списка загруженных в Ollama моделей
  */
 async function getAvailableModels() {
+  if (cachedModels && (Date.now() - lastCheckTime < 15000)) {
+    return cachedModels;
+  }
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 3000);
+    const timer = setTimeout(() => ctrl.abort(), 10000);
     const res = await fetch(`${OLLAMA_HOST}/api/tags`, { signal: ctrl.signal });
     clearTimeout(timer);
 
-    if (!res.ok) return [];
+    if (!res.ok) return cachedModels || [];
     const data = await res.json();
-    return (data.models || []).map(m => m.name);
+    cachedModels = (data.models || []).map(m => m.name);
+    lastCheckTime = Date.now();
+    return cachedModels;
   } catch {
-    return [];
+    return cachedModels || [];
   }
+}
+
+/**
+ * Определение лучшей доступной модели
+ */
+async function getBestModel() {
+  const models = await getAvailableModels();
+  if (models.length === 0) return DEFAULT_MODEL;
+
+  // 1. Ищем 14b модель если есть
+  const model14b = models.find(m => m.includes('14b'));
+  if (model14b) return model14b;
+
+  // 2. Ищем qwen2.5 (например, qwen2.5:7b)
+  const qwenModel = models.find(m => m.includes('qwen2.5'));
+  if (qwenModel) return qwenModel;
+
+  // 3. Ищем точное совпадение с дефолтной моделью
+  if (models.includes(DEFAULT_MODEL)) return DEFAULT_MODEL;
+
+  // 4. Ищем qwen или llama
+  const fallback = models.find(m => m.includes('qwen') || m.includes('llama'));
+  return fallback || models[0];
 }
 
 /**
@@ -25,13 +56,14 @@ async function getAvailableModels() {
 async function checkStatus() {
   const models = await getAvailableModels();
   const connected = models.length > 0;
-  const isDefaultLoaded = models.some(m => m === DEFAULT_MODEL || m.startsWith(DEFAULT_MODEL.split(':')[0]));
+  const activeModel = await getBestModel();
 
   return {
     connected,
     host: OLLAMA_HOST,
     targetModel: DEFAULT_MODEL,
-    isModelAvailable: isDefaultLoaded,
+    activeModel,
+    isModelAvailable: connected,
     availableModels: models
   };
 }
@@ -40,7 +72,7 @@ async function checkStatus() {
  * Отправка чат-запроса в Ollama
  */
 async function chat(messages, options = {}) {
-  const model = options.model || DEFAULT_MODEL;
+  const model = options.model || (await getBestModel());
   const temperature = options.temperature ?? 0.4;
   const format = options.format ?? 'json';
   const timeoutMs = options.timeoutMs || 60000;

@@ -41,7 +41,8 @@ function persistTasks(tasks) {
  */
 function getTasksByFilter({ subject, grade, exam, topic }) {
   const tasks = loadTasks();
-  return tasks.filter(t => {
+  // Сначала строгий поиск
+  let filtered = tasks.filter(t => {
     if (subject && t.subject !== subject) return false;
     if (exam && t.exam !== exam) return false;
     if (grade && Number(t.grade) !== Number(grade)) return false;
@@ -50,6 +51,25 @@ function getTasksByFilter({ subject, grade, exam, topic }) {
     }
     return true;
   });
+
+  if (filtered.length > 0) return filtered;
+
+  // Мягкий поиск: по предмету и совпадению темы (игнорируя несовпадение ОГЭ/ЕГЭ)
+  if (topic) {
+    filtered = tasks.filter(t => 
+      (subject ? t.subject === subject : true) &&
+      t.topic && (t.topic.toLowerCase().includes(topic.toLowerCase()) || topic.toLowerCase().includes(t.topic.toLowerCase()))
+    );
+    if (filtered.length > 0) return filtered;
+  }
+
+  // Если нет точной темы, берем по предмету
+  if (subject) {
+    filtered = tasks.filter(t => t.subject === subject);
+    if (filtered.length > 0) return filtered;
+  }
+
+  return tasks;
 }
 
 /**
