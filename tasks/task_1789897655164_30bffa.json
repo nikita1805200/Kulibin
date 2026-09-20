@@ -2,7 +2,7 @@
   "id": "task_1789897655164_30bffa",
   "workerId": "Timur",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-20T09:47:35.164Z",
   "scheduledTime": "2026-09-20T09:47:29.361Z",
   "commitMessage": "база данных и подбор задач для qwen",
