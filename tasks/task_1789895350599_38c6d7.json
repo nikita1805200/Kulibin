@@ -2,7 +2,7 @@
   "id": "task_1789895350599_38c6d7",
   "workerId": "artem",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-20T09:09:10.599Z",
   "scheduledTime": "2026-09-20T09:09:05.764Z",
   "commitMessage": "ollama начало",
