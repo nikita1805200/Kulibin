@@ -2,7 +2,7 @@
   "id": "task_1789901998911_a1c4c3",
   "workerId": "artem",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-20T10:59:58.912Z",
   "scheduledTime": "2026-09-20T10:59:53.412Z",
   "commitMessage": "системный промт и оркестратор генерации",
