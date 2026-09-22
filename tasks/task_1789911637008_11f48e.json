@@ -2,7 +2,7 @@
   "id": "task_1789911637008_11f48e",
   "workerId": "Timur",
   "targetBranch": "main",
-  "status": "pending",
+  "status": "in_progress",
   "createdAt": "2026-09-20T13:40:37.008Z",
   "scheduledTime": "2026-09-20T13:40:33.201Z",
   "commitMessage": "доделываю",
