@@ -7,6 +7,7 @@ const { checkStatus } = require('./ai/ollama');
 const { getStats } = require('./ai/db');
 
 const PORT = process.env.PORT || 3000;
+const START_TIME = Date.now();
 
 const MIME_MAP = {
   '.html': 'text/html; charset=utf-8',
@@ -18,12 +19,20 @@ const MIME_MAP = {
   '.ico': 'image/x-icon'
 };
 
+function getHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'X-Frame-Options': 'ALLOWALL',
+    'Content-Security-Policy': 'frame-ancestors *;'
+  };
+}
+
 function sendJson(res, status, data) {
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    ...getHeaders()
   });
   res.end(JSON.stringify(data));
 }
@@ -45,11 +54,7 @@ function parseJson(req) {
 
 const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    });
+    res.writeHead(204, getHeaders());
     return res.end();
   }
 
@@ -58,6 +63,13 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname.startsWith('/api/')) {
     try {
+      if (pathname === '/api/health' && req.method === 'GET') {
+        return sendJson(res, 200, {
+          status: 'ok',
+          uptime: Math.floor((Date.now() - START_TIME) / 1000)
+        });
+      }
+
       if (pathname === '/api/taxonomy' && req.method === 'GET') {
         return sendJson(res, 200, SUBJECTS);
       }
@@ -74,22 +86,25 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, task);
       }
 
-      return sendJson(res, 404, { error: 'Route not found' });
+      return sendJson(res, 404, { error: 'Not found' });
     } catch (err) {
       return sendJson(res, 500, { error: err.message });
     }
   }
 
-  let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
+  const filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
   const ext = path.extname(filePath).toLowerCase();
   const mime = MIME_MAP[ext] || 'application/octet-stream';
 
   fs.readFile(filePath, (err, content) => {
     if (err) {
-      res.writeHead(err.code === 'ENOENT' ? 404 : 500);
+      res.writeHead(err.code === 'ENOENT' ? 404 : 500, getHeaders());
       return res.end(err.code === 'ENOENT' ? 'Not Found' : 'Server Error');
     }
-    res.writeHead(200, { 'Content-Type': mime });
+    res.writeHead(200, {
+      'Content-Type': mime,
+      ...getHeaders()
+    });
     res.end(content);
   });
 });
