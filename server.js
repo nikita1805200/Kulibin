@@ -5,6 +5,7 @@ const { SUBJECTS } = require('./ai/taxonomy');
 const { generateTask } = require('./ai/generator');
 const { checkStatus } = require('./ai/ollama');
 const { getStats } = require('./ai/db');
+const { handleMessage } = require('./bot/bot');
 
 const PORT = process.env.PORT || 3000;
 const START_TIME = Date.now();
@@ -84,6 +85,23 @@ const server = http.createServer(async (req, res) => {
         const body = await parseJson(req);
         const task = await generateTask(body);
         return sendJson(res, 200, task);
+      }
+
+      if (pathname === '/api/bot') {
+        if (req.method === 'GET') {
+          return sendJson(res, 200, { status: 'ok', service: 'MAX Bot Webhook' });
+        }
+        if (req.method === 'POST') {
+          const body = await parseJson(req);
+          if (body.type === 'confirmation') {
+            res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', ...getHeaders() });
+            return res.end(process.env.MAX_CONFIRMATION_TOKEN || 'ok');
+          }
+          const text = body.text || body.object?.message?.text || body.message?.text || '';
+          const payload = body.payload || body.object?.message?.payload;
+          const response = handleMessage(text, payload);
+          return sendJson(res, 200, response);
+        }
       }
 
       return sendJson(res, 404, { error: 'Not found' });

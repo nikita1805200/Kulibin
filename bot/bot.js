@@ -1,3 +1,5 @@
+const { loadTasks } = require('../ai/db');
+
 const APP_ID = process.env.MAX_APP_ID || '51950000';
 const APP_URL = process.env.MAX_APP_URL || 'http://localhost:3000';
 
@@ -43,6 +45,21 @@ function handleMessage(text = '', payload = null) {
   if (normalized === '/start' || normalized === 'старт' || normalized === 'меню') {
     return {
       text: 'Привет! Я бот образовательной платформы «Кулибин: Траектория» для Сферум / MAX.\n\nНажмите кнопку ниже, чтобы открыть интерактивный тренажер ОГЭ/ЕГЭ с подсказками и решениями.',
+      keyboard: getBotKeyboard()
+    };
+  }
+
+  if (normalized === '/task' || normalized === 'задача' || payload?.command === 'task') {
+    const tasks = loadTasks();
+    if (tasks.length > 0) {
+      const task = tasks[Math.floor(Math.random() * tasks.length)];
+      return {
+        text: `📌 Задача (${task.subject || 'Предмет'}, ${task.grade || 9} класс):\n\n${task.condition || task.question}\n\n💡 Подсказка: ${task.hints ? task.hints[0] : 'Решите задачу и откройте приложение для сверки ответа.'}`,
+        keyboard: getBotKeyboard()
+      };
+    }
+    return {
+      text: 'База задач загружается. Откройте приложение для генерации через ИИ.',
       keyboard: getBotKeyboard()
     };
   }

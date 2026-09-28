@@ -299,6 +299,9 @@ async function checkAiStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof vkBridge !== 'undefined') {
+    vkBridge.send('VKWebAppInit');
+  }
   initTabs();
   populateSubjects();
   initPresets();
