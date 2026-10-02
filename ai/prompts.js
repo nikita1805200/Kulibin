@@ -2,15 +2,11 @@ const SYSTEM_PROMPT = `Ты — ведущий эксперт-методист �
 Составляй качественные учебные задания (ОГЭ, ЕГЭ или школьная программа) с точным числовым ответом и кратким пошаговым решением.
 Ответ возвращай строго в формате JSON.`;
 
-/**
- * Быстрый компактный промпт для оперативной генерации
- */
 function buildTaskPrompt({ subjectName, grade, topic, examType, fewShotExamples = [] }) {
   const ex = fewShotExamples[0];
-  let exampleText = '';
-  if (ex) {
-    exampleText = `Образец задачи:\nТема: ${ex.topic}\nУсловие: ${ex.condition}\nРешение: ${ex.solution}\nОтвет: ${ex.answer}\n\n`;
-  }
+  const exampleText = ex
+    ? `Образец задачи:\nТема: ${ex.topic}\nУсловие: ${ex.condition}\nРешение: ${ex.solution}\nОтвет: ${ex.answer}\n\n`
+    : '';
 
   const userContent = `${exampleText}Составь НОВУЮ аналогичную задачу:
 - Предмет: ${subjectName}
@@ -40,3 +36,4 @@ module.exports = {
   SYSTEM_PROMPT,
   buildTaskPrompt
 };
+
